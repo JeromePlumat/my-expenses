@@ -1,0 +1,14 @@
+# any node_modules
+node_modules
+
+# vscode
+.vscode
+
+# Mac
+.DS_Store
+
+# doc
+*.md
+
+# env file
+.env
