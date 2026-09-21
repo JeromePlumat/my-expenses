@@ -5,6 +5,8 @@ import expensesRouter from './routes/expenses.router.ts';
 
 const app = express();
 
+const port = process.env.PORT || 3000;
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(cors({ origin: ['http://localhost:5173', /\.onrender\.com$/] }));
@@ -15,8 +17,8 @@ app.get('/ping', (req, res) => {
 
 app.use('/api/expenses', expensesRouter);
 
-app.listen(3000, () => {
-  console.log('Server listening on http://localhost:3000');
+app.listen(port, () => {
+  console.log(`Server listening on http://localhost:${port}`);
 });
 
 export default app;
