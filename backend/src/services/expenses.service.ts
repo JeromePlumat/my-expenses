@@ -8,15 +8,20 @@ export class ExpensesService {
   private static resetPath = "./data/expenses.init.json";
   
   public static async getExpenses(): Promise<Expense[]> {
-    const rows = await db.orm.public.Expense.all();
-    const expenses = rows.map((row: any) => ({
-      id: row.id.toString(),
-      date: row.date,
-      amount: row.amount,
-      description: row.description,
-      payer: row.payer,
-    }));
-    return expenses;
+    try {
+      const rows = await db.orm.public.Expense.all();
+      const expenses = rows.map((row: any) => ({
+        id: row.id.toString(),
+        date: row.date,
+        amount: row.amount,
+        description: row.description,
+        payer: row.payer,
+      }));
+      return expenses;
+    } catch (error) {
+      console.error("Error getting expenses:", error);
+      throw error;
+    }
   }
   
   public static async addExpense(newExpense: NewExpense): Promise<Expense> {
@@ -28,14 +33,20 @@ export class ExpensesService {
     // expenses.push(expense);
     // this.saveExpenses(expenses);
     // return expenses;
-    const expense = await db.orm.public.Expense.create(newExpense);
-    return {
-      id: expense.id.toString(),
-      date: expense.date,
-      amount: expense.amount,
-      description: expense.description,
-      payer: expense.payer,
-    };
+    
+    try {
+      const expense = await db.orm.public.Expense.create(newExpense);
+      return {
+        id: expense.id.toString(),
+        date: expense.date,
+        amount: expense.amount,
+        description: expense.description,
+        payer: expense.payer,
+      };
+    } catch (error) {
+      console.error("Error adding expense:", error);
+      throw error;
+    }
   }
   
   // public static resetExpenses(): Expense[] {
@@ -43,15 +54,15 @@ export class ExpensesService {
   //   return this.readExpenses();
   // }
   
-  private static readExpenses(): Expense[] {
-    try {
-      const data = JSON.parse(fs.readFileSync(this.dataPath, "utf-8"));
-      return data;
-    } catch (error) {
-      console.error("Error reading expenses file:", error);
-      throw error;
-    }
-  }
+  // private static readExpenses(): Expense[] {
+  //   try {
+  //     const data = JSON.parse(fs.readFileSync(this.dataPath, "utf-8"));
+  //     return data;
+  //   } catch (error) {
+  //     console.error("Error reading expenses file:", error);
+  //     throw error;
+  //   }
+  // }
   
   // private static saveExpenses(expenses: Expense[]): void {
   //   try {
