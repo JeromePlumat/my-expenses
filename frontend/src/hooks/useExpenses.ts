@@ -17,7 +17,7 @@
  *      clean actions to the rest of the app.
  */
 import { useState, useEffect, useCallback } from "react";
-import type { Expense } from "../types/Expense";
+import type { Expense, NewExpense } from "../types/Expense";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -43,10 +43,10 @@ async function fetchAllExpenses(): Promise<Expense[]> {
 
 /**
  * Sends a new expense to the backend (HTTP POST).
- * The backend responds with the updated full list, which we return.
- * Returns an empty array if the request fails.
+ * The backend responds with the created expense object, which we return.
+ * Returns null if the request fails.
  */
-async function postExpense(newExpense: Expense): Promise<Expense[]> {
+async function postExpense(newExpense: NewExpense): Promise<Expense | null> {
   return fetch(`${API_BASE_URL}/api/expenses`, {
     method: "POST",
     headers: {
@@ -55,10 +55,10 @@ async function postExpense(newExpense: Expense): Promise<Expense[]> {
     body: JSON.stringify(newExpense),
   })
     .then((res) => res.json())
-    .then((data) => (Array.isArray(data) ? (data as Expense[]) : []))
+    .then((data) => data as Expense)
     .catch((error) => {
       console.error("Error adding expense:", error);
-      return [] as Expense[];
+      return null;
     });
 }
 
@@ -153,12 +153,14 @@ function useExpenses() {
    * which can cause unnecessary re-renders in child components that receive it
    * as a prop. The `[]` dependency list means "never recreate this function".
    *
-   * addExpense: sends the new expense to the backend, then replaces the local
-   * list with the updated list returned by the server.
+   * addExpense: sends the new expense to the backend, then appends the created
+   * expense returned by the server to the existing local list.
    */
-  const addExpense = useCallback(async (newExpense: Expense): Promise<void> => {
-    const updated = await postExpense(newExpense);
-    setExpenses(updated); // triggers a re-render with the new list
+  const addExpense = useCallback(async (newExpense: NewExpense): Promise<void> => {
+    const created = await postExpense(newExpense);
+    if (created) {
+      setExpenses((prev) => [...prev, created]); // append new expense without clearing the list
+    }
   }, []);
 
   /**

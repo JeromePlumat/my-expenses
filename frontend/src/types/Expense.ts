@@ -5,3 +5,4 @@ export interface Expense {
   payer: string;
   amount: number;
 }
+export type NewExpense = Omit<Expense, 'id'>;
