@@ -1,7 +1,7 @@
 
 import express from "express";
 import type { Expense } from "../types/expense.ts";
-import { ExpensesService } from "../src/services/expenses.service.ts";
+import { ExpensesService } from "../services/expenses.service.ts";
 import { isValidNewExpense } from "../guards/expenses.guard.ts";
 
 const expensesRouter = express.Router();
