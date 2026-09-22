@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "node --watch app.ts",
+    "build" : "npm install && npm run contract:emit",
     "start": "node app.ts",
     "typecheck": "tsc --noEmit",
     "postinstall": "prisma skills sync || exit 0",
