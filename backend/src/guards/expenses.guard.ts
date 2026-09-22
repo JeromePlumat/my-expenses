@@ -6,7 +6,6 @@ export function isValidNewExpense(data: any): data is Expense {
   }
   const candidate = data as Record<string, unknown>;
   return (
-    typeof candidate.id === 'string' &&
     typeof candidate.date === 'string' &&
     typeof candidate.description === 'string' &&
     typeof candidate.payer === 'string' &&

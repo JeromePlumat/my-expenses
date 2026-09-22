@@ -12,3 +12,12 @@ node_modules
 
 # env file
 .env
+
+# local postgres data
+backend/data/postgres
+
+backend/.agents
+backend/.devin
+backend/.claude
+backend/.windsurf
+backend/.cursor
