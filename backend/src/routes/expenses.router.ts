@@ -9,7 +9,6 @@ const expensesRouter = express.Router();
 expensesRouter.get("/", async (req, res) => {
   try {
     const expenses = await ExpensesService.getExpenses();
-    console.log("expenses", expenses);
     res.json(expenses);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
