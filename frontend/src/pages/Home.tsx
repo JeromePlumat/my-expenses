@@ -27,7 +27,7 @@ function Home() {
     <h2>Your expenses</h2>
     {expenses.length > 0 && <ExpenseSorter setSortingAlgo={handleAlgoChange} />}
     <ul>
-      {expenses.sort(sortingAlgo).map((expense) => (
+      {[...expenses].sort(sortingAlgo).map((expense) => (
         <li key={expense.id}>
           <ExpenseItem expense={expense} />
         </li>

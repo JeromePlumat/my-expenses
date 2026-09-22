@@ -34,7 +34,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 async function fetchAllExpenses(): Promise<Expense[]> {
   return fetch(`${API_BASE_URL}/api/expenses`)
     .then((res) => res.json())
-    .then((data) => data as Expense[])
+    .then((data) => (Array.isArray(data) ? (data as Expense[]) : []))
     .catch((error) => {
       console.error("Error getting expenses:", error);
       return [] as Expense[];
@@ -55,7 +55,7 @@ async function postExpense(newExpense: Expense): Promise<Expense[]> {
     body: JSON.stringify(newExpense),
   })
     .then((res) => res.json())
-    .then((data) => data as Expense[])
+    .then((data) => (Array.isArray(data) ? (data as Expense[]) : []))
     .catch((error) => {
       console.error("Error adding expense:", error);
       return [] as Expense[];
@@ -76,7 +76,7 @@ async function postResetExpenses(): Promise<Expense[]> {
     body: "{}",
   })
     .then((res) => res.json())
-    .then((data) => data as Expense[])
+    .then((data) => (Array.isArray(data) ? (data as Expense[]) : []))
     .catch((error) => {
       console.error("Error resetting expenses:", error);
       return [] as Expense[];
