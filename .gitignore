@@ -9,6 +9,7 @@ node_modules
 
 # doc
 *.md
+!backend/migration.troubleshoot.guide.md
 
 # env file
 .env

@@ -9,13 +9,14 @@ export class ExpensesService {
   
   public static async getExpenses(): Promise<Expense[]> {
     try {
-      const rows = await db.orm.public.Expense.all();
-      const expenses = rows.map((row: any) => ({
-        id: row.id.toString(),
+      const rows = await db.orm.public.Expense.include('participants').all();
+      const expenses = rows.map((row) => ({
+        id: row.id,
         date: row.date,
         amount: row.amount,
         description: row.description,
-        payer: row.payer,
+        payerId: row.payerId,
+        participants: row.participants.map((p) => p.userId),
       }));
       return expenses;
     } catch (error) {
@@ -24,24 +25,23 @@ export class ExpensesService {
     }
   }
   
-  public static async addExpense(newExpense: NewExpense): Promise<Expense> {
-    // const expenses = await this.getExpenses();
-    // const expense: Expense = {
-    //   ...newExpense,
-    //   id: (expenses.length + 1).toString()
-    // };
-    // expenses.push(expense);
-    // this.saveExpenses(expenses);
-    // return expenses;
-    
+  public static async addExpense(newExpense: NewExpense): Promise<Expense> {  
     try {
-      const expense = await db.orm.public.Expense.create(newExpense);
+      const expense = await db.orm.public.Expense.create({
+        description: newExpense.description,
+        amount: newExpense.amount,
+        date: newExpense.date,
+        payerId: newExpense.payerId,
+        participants: (mutator) =>
+          mutator.create(newExpense.participants.map((userId) => ({ userId }))),
+      });
       return {
-        id: expense.id.toString(),
+        id: expense.id,
         date: expense.date,
         amount: expense.amount,
         description: expense.description,
-        payer: expense.payer,
+        payerId: expense.payerId,
+        participants: newExpense.participants,
       };
     } catch (error) {
       console.error("Error adding expense:", error);
