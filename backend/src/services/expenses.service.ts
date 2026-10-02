@@ -1,5 +1,5 @@
 import fs from "fs";
-import type { Expense, NewExpense } from "../types/expense.ts";
+import type { Expense, NewExpense, ExpenseFilter } from "../types/expense.ts";
 import { db } from "../prisma/db.ts";
 
 export class ExpensesService {
@@ -7,7 +7,7 @@ export class ExpensesService {
   private static dataPath = "./data/expenses.json";
   private static resetPath = "./data/expenses.init.json";
   
-  public static async getExpenses(): Promise<Expense[]> {
+  public static async getExpenses(filter?: ExpenseFilter): Promise<Expense[]> {
     try {
       const rows = await db.orm.public.Expense.include('participants').all();
       const expenses = rows.map((row) => ({

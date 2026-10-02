@@ -19,6 +19,10 @@
 import { useState, useEffect, useCallback } from "react";
 import type { Expense, NewExpense } from "../types/Expense";
 
+export interface ExpenseFilter {
+  amount?: number;
+}
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 // =============================================================================
@@ -31,8 +35,12 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
  * Fetches the full list of expenses from the backend.
  * Returns an empty array if the request fails so the UI never crashes.
  */
-async function fetchAllExpenses(): Promise<Expense[]> {
-  return fetch(`${API_BASE_URL}/api/expenses`)
+async function fetchAllExpenses(filter?: ExpenseFilter): Promise<Expense[]> {
+  let url = `${API_BASE_URL}/api/expenses`;
+  if (filter && filter.amount) {
+    url += `?amount=${filter.amount}`;
+  }
+  return fetch(url)
     .then((res) => res.json())
     .then((data) => (Array.isArray(data) ? (data as Expense[]) : []))
     .catch((error) => {
@@ -178,7 +186,7 @@ function useExpenses() {
    * The component destructures what it needs:
    *   const { expenses, addExpense } = useExpenses();
    */
-  return { expenses, loading, addExpense, resetExpenses };
+  return { expenses, loading, addExpense, resetExpenses, fetchAllExpenses };
 }
 
 export default useExpenses;

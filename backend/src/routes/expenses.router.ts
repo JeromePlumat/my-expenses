@@ -1,6 +1,6 @@
 
 import express from "express";
-import type { Expense } from "../types/expense.ts";
+import type { Expense, ExpenseFilter } from "../types/expense.ts";
 import { ExpensesService } from "../services/expenses.service.ts";
 import { isValidNewExpense } from "../guards/expenses.guard.ts";
 
@@ -8,7 +8,13 @@ const expensesRouter = express.Router();
 
 expensesRouter.get("/", async (req, res) => {
   try {
-    const expenses = await ExpensesService.getExpenses();
+    const query = req.query;
+    console.log(query);
+    const filter: ExpenseFilter = {};
+    if (req.query.amount && typeof req.query.amount === 'string' && !isNaN(Number(req.query.amount))) {
+      filter.amount = Number(req.query.amount);
+    }
+    const expenses = await ExpensesService.getExpenses(filter);
     res.json(expenses);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
