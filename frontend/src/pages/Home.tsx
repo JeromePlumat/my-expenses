@@ -5,6 +5,7 @@ import ExpenseAdd from "../components/ExpenseAdd";
 import ExpenseReset from "../components/ExpenseReset";
 import ExpenseSorter from "../components/ExpenseSorter";
 import useExpenses from "../hooks/useExpenses";
+import ExpenseSearch from "../components/ExpenseSearch";
 
 // const expenses: Expense[] = [
 //   { id: "1", date: "2026-09-15", description: "Restaurant", payer: "John Doe", amount: 50 },
@@ -26,6 +27,7 @@ function Home() {
     <ExpenseReset onReset={resetExpenses} />
     <h2>Your expenses</h2>
     {expenses.length > 0 && <ExpenseSorter setSortingAlgo={handleAlgoChange} />}
+    {expenses.length > 0 && <ExpenseSearch />}
     <ul>
       {[...expenses ?? []].sort(sortingAlgo).map((expense) => (
         <li key={expense.id}>
