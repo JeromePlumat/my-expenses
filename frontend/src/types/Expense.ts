@@ -1,8 +1,9 @@
 export interface Expense {
-  id: string;
+  id: number;
   date: string;
   description: string;
-  payer: string;
+  payerId: number;
   amount: number;
+  participants: number[];
 }
 export type NewExpense = Omit<Expense, 'id'>;
