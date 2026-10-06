@@ -2,6 +2,7 @@ import express from 'express';
 import logger from 'morgan';
 import cors from 'cors';
 import expensesRouter from './src/routes/expenses.router.ts';
+import usersRouter from './src/routes/users.router.ts';
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.get('/ping', (req, res) => {
 });
 
 app.use('/api/expenses', expensesRouter);
+app.use('/api/users', usersRouter);
 
 app.listen(port, () => {
   console.log(`Server listening on http://localhost:${port}`);
