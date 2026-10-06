@@ -8,8 +8,6 @@ const expensesRouter = express.Router();
 
 expensesRouter.get("/", async (req, res) => {
   try {
-    const query = req.query;
-    console.log(query);
     const filter: ExpenseFilter = {};
     if (req.query.amount && typeof req.query.amount === 'string' && !isNaN(Number(req.query.amount))) {
       filter.amount = Number(req.query.amount);
