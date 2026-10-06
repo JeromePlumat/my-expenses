@@ -35,6 +35,7 @@ const expensesSeed = [
     payerId: 1, // John pays
     date: Temporal.Instant.from("2026-10-15T00:00:00Z"),
     participants: [1, 2],
+    categoryId: 2,
   },
   {
     description: 'Groceries',
@@ -42,6 +43,7 @@ const expensesSeed = [
     date: Temporal.Instant.from("2026-10-16T00:00:00Z"),
     payerId: 2, // Jane pays
     participants: [1, 2, 3],
+    categoryId: 1,
   },
   {
     description: 'Internet Bill',
@@ -49,6 +51,7 @@ const expensesSeed = [
     date: Temporal.Instant.from("2026-10-17T00:00:00Z"),
     payerId: 3, // Abdallah pays
     participants: [2, 3],
+    categoryId: 2,
   },
 ];
 

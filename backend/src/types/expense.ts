@@ -1,4 +1,6 @@
 import { User } from "./user";
+import { Category } from "./category";
+
 
 export interface Expense {
   id: number;
@@ -8,6 +10,8 @@ export interface Expense {
   payer: User;
   amount: number;
   participants: User[];
+  categoryId?: number;
+  category?: Category;
 }
 
 export type NewExpense = Omit<Expense, 'id'>;
