@@ -1,4 +1,5 @@
 import fs from "fs";
+import { Temporal } from "temporal-polyfill";
 import type { Expense, NewExpense, ExpenseFilter } from "../types/expense.ts";
 import { db } from "../prisma/db.ts";
 
@@ -40,7 +41,7 @@ export class ExpensesService {
       const created = await db.orm.public.Expense.create({
         description: newExpense.description,
         amount: newExpense.amount,
-        date: new Date(newExpense.date).toISOString(),
+        date: Temporal.Instant.from(`${newExpense.date}T00:00:00Z`),
         payerId: newExpense.payerId,
         ...(newExpense.categoryId ? { categoryId: newExpense.categoryId } : undefined),
         participants: (mutator) =>
