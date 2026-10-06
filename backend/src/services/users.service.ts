@@ -18,5 +18,23 @@ export class UsersService {
       throw error;
     }
   }
+
+  public static async getById(id: number): Promise<User | undefined> {
+    try {
+      const row = await db.orm.public.User.where({ id }).all();
+      if (!row || row.length === 0) {
+        return undefined;
+      }
+      return {
+        id: row[0].id,
+        name: row[0].name,
+        email: row[0].email,
+        bankAccount: row[0].bankAccount,
+      };
+    } catch (error) {
+      console.error("Error getting user by id:", error);
+      throw error;
+    }
+  }
   
 }

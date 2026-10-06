@@ -21,6 +21,7 @@ import type { Expense, NewExpense } from "../types/Expense";
 
 export interface ExpenseFilter {
   amount?: number;
+  payerId?: string;
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -38,9 +39,17 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 async function fetchAllExpenses(filter?: ExpenseFilter): Promise<Expense[]> {
   let url = `${API_BASE_URL}/api/expenses`;
   console.log("filter", filter);
-  if (filter && filter.amount) {
-    url += `?amount=${filter.amount}`;
+
+  if (filter) {
+    const params = new URLSearchParams();
+    for (const [key, value] of Object.entries(filter)) {
+      if (value !== undefined && value !== null && value !== "") {
+        params.append(key, value.toString());
+      }
+    }
+    url += `?${params.toString()}`;
   }
+  
   return fetch(url)
     .then((res) => res.json())
     .then((data) => (Array.isArray(data) ? (data as Expense[]) : []))

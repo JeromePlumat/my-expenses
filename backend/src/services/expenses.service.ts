@@ -12,8 +12,8 @@ export class ExpensesService {
       let query = db.orm.public.Expense
         .include('participants', (p) => p.include('user'))
         .include('payer');
-      if (filter?.amount) {
-        query = query.where({ amount: filter.amount });
+      if (filter) {
+        query = query.where(filter);
       }
       const rows = await query.all();
       const expenses = rows.map((row) => ({
