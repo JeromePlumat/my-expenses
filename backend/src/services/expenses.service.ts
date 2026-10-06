@@ -9,7 +9,13 @@ export class ExpensesService {
   
   public static async getExpenses(filter?: ExpenseFilter): Promise<Expense[]> {
     try {
-      const rows = await db.orm.public.Expense.include('participants', (p) => p.include('user')).include('payer').all();
+      let query = db.orm.public.Expense
+        .include('participants', (p) => p.include('user'))
+        .include('payer');
+      if (filter?.amount) {
+        query = query.where({ amount: filter.amount });
+      }
+      const rows = await query.all();
       const expenses = rows.map((row) => ({
         id: row.id,
         date: row.date,

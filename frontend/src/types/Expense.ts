@@ -1,12 +1,15 @@
 import * as z from "zod";
 
+import { type User } from "./User";
+
 export interface Expense {
   id: number;
   date: string;
   description: string;
   payerId: number;
+  payer: User;
   amount: number;
-  participants: number[];
+  participants: User[];
 }
 
 export const ExpenseFormSchema = z.object({

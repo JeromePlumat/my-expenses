@@ -15,8 +15,8 @@ function ExpenseItem({ expense }: ExpenseItemProps) {
     <p>Description: {expense.description}</p>
     {/* amount must be restricted to 2 decimal places */}
     <p>Amount: {expense.amount.toFixed(2)}</p>
-    <p>Payer ID: {expense.payerId}</p>
-    <p>Participants: {expense.participants.join(', ')}</p>
+    <p>Payer: {expense.payer.name}</p>
+    <p>Participants: {expense.participants.map(p => p.name).join(', ')}</p>
   </div>;
 }
 
