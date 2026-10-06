@@ -14,7 +14,7 @@ import ExpenseSearch from "../components/ExpenseSearch";
 // ];
 
 function Home() {
-  const { expenses, addExpense, resetExpenses, fetchAllExpenses } = useExpenses();
+  const { expenses, addExpense, resetExpenses, searchExpenses } = useExpenses();
   const [sortingAlgo, setSortingAlgo] = useState<(a: Expense, b: Expense) => number>(() => () => 1);
 
   const handleAlgoChange = (algo: (a: Expense, b: Expense) => number) => {
@@ -27,7 +27,7 @@ function Home() {
     <ExpenseReset onReset={resetExpenses} />
     <h2>Your expenses</h2>
     {expenses.length > 0 && <ExpenseSorter setSortingAlgo={handleAlgoChange} />}
-    {expenses.length > 0 && <ExpenseSearch fetchAllExpenses={fetchAllExpenses} />}
+    {expenses.length > 0 && <ExpenseSearch searchExpenses={searchExpenses} />}
     <ul>
       {[...expenses ?? []].sort(sortingAlgo).map((expense) => (
         <li key={expense.id}>

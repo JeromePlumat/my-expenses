@@ -37,6 +37,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
  */
 async function fetchAllExpenses(filter?: ExpenseFilter): Promise<Expense[]> {
   let url = `${API_BASE_URL}/api/expenses`;
+  console.log("filter", filter);
   if (filter && filter.amount) {
     url += `?amount=${filter.amount}`;
   }
@@ -182,11 +183,20 @@ function useExpenses() {
   }, []);
 
   /**
+   * searchExpenses: fetches expenses matching the given filter, then stores
+   * the results in state so the UI re-renders with the filtered list.
+   */
+  const searchExpenses = useCallback(async (filter?: ExpenseFilter): Promise<void> => {
+    const results = await fetchAllExpenses(filter);
+    setExpenses(results);
+  }, []);
+
+  /**
    * Everything a component needs is returned in a plain object.
    * The component destructures what it needs:
    *   const { expenses, addExpense } = useExpenses();
    */
-  return { expenses, loading, addExpense, resetExpenses, fetchAllExpenses };
+  return { expenses, loading, addExpense, resetExpenses, searchExpenses };
 }
 
 export default useExpenses;
