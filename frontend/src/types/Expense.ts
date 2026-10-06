@@ -1,6 +1,7 @@
 import * as z from "zod";
 
 import { type User } from "./User";
+import { type Category } from "./Category";
 
 export interface Expense {
   id: number;
@@ -10,6 +11,8 @@ export interface Expense {
   payer: User;
   amount: number;
   participants: User[];
+  categoryId?: number;
+  category?: Category;
 }
 
 export const ExpenseFormSchema = z.object({

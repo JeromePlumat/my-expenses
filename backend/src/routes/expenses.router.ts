@@ -4,6 +4,7 @@ import type { Expense, ExpenseFilter } from "../types/expense.ts";
 import { ExpensesService } from "../services/expenses.service.ts";
 import { isValidNewExpense } from "../guards/expenses.guard.ts";
 import { UsersService } from "../services/users.service.ts";
+import { CategoriesService } from "../services/categories.service.ts";
 
 const expensesRouter = express.Router();
 
@@ -21,6 +22,16 @@ expensesRouter.get("/", async (req, res) => {
       const payer = await UsersService.getById(filter.payerId);
       if (!payer) {
         return res.status(404).json({ error: "Payer not found" });
+      }
+    }
+    if (req.query.categoryId && typeof req.query.categoryId === 'string') {
+      filter.categoryId = parseInt(req.query.categoryId);
+      if (isNaN(filter.categoryId)) {
+        return res.status(400).json({ error: "Invalid categoryId" });
+      }
+      const category = await CategoriesService.getById(filter.categoryId);
+      if (!category) {
+        return res.status(404).json({ error: "Category not found" });
       }
     }
     const expenses = await ExpensesService.getExpenses(filter);

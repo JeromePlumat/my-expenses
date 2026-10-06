@@ -5,17 +5,17 @@ const categories: Category[] = [
   {
     id: 0,
     name: "Groceries",
-    colour: "FF0000",
+    colour: "red",
   },
   {
     id: 1,
     name: "House Expenses",
-    colour: "0000FF",
+    colour: "blue",
   },
   {
     id: 2,
     name: "Entertainment",
-    colour: "00FF00",
+    colour: "green",
   },
 ];
 

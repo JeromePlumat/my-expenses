@@ -19,4 +19,5 @@ export type NewExpense = Omit<Expense, 'id'>;
 export type ExpenseFilter = {
   amount?: number;
   payerId?: number;
+  categoryId?: number;
 };

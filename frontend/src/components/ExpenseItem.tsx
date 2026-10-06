@@ -17,6 +17,7 @@ function ExpenseItem({ expense }: ExpenseItemProps) {
     <p>Amount: {expense.amount.toFixed(2)}</p>
     <p>Payer: {expense.payer.name}</p>
     <p>Participants: {expense.participants.map(p => p.name).join(', ')}</p>
+    {expense.category && <p className="text-sm text-gray-500" style={{ color: expense.category.colour }}>Category: {expense.category.name}</p>}
   </div>;
 }
 

@@ -22,6 +22,7 @@ import type { Expense, NewExpense } from "../types/Expense";
 export interface ExpenseFilter {
   amount?: number;
   payerId?: string;
+  categoryId?: number;
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";

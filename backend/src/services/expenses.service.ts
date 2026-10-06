@@ -11,7 +11,8 @@ export class ExpensesService {
     try {
       let query = db.orm.public.Expense
         .include('participants', (p) => p.include('user'))
-        .include('payer');
+        .include('payer')
+        .include('category');
       if (filter) {
         query = query.where(filter);
       }
@@ -24,6 +25,8 @@ export class ExpensesService {
         payerId: row.payerId,
         payer: row.payer,
         participants: row.participants.map((p) => p.user),
+        categoryId: row.categoryId ?? undefined,
+        category: row.category ?? undefined,
       }));
       return expenses;
     } catch (error) {
