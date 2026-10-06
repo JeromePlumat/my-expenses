@@ -4,6 +4,9 @@
 ### Get all expenses
 GET {{expenses}}
 
+### Get by amount
+GET {{expenses}}?amount=45
+
 ### Add a new expense
 POST {{expenses}}
 Content-Type: application/json
