@@ -9,7 +9,7 @@ interface ExpenseItemProps {
 }
 
 function ExpenseItem({ expense }: ExpenseItemProps) {
-  return <div>
+  return <div style={{border: '1px solid black', padding: '10px', marginBottom: '10px'}}>
     <h3>Expense {expense.id}</h3>
     <p>Date: {expense.date}</p>
     <p>Description: {expense.description}</p>

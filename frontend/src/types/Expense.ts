@@ -21,8 +21,12 @@ export const ExpenseFormSchema = z.object({
   amount: z.number().positive("Amount must be positive"),
   date: z.string().min(1, "Date is required"),
   participantsRaw: z.string(),
+  categoryId: z.number().int().optional(),
 });
 
 export type ExpenseFormValues = z.infer<typeof ExpenseFormSchema>;
 
-export type NewExpense = Omit<Expense, 'id'>;
+// NewExpense is used when submitting a form: participants are IDs, payer/category are resolved server-side
+export type NewExpense = Omit<Expense, 'id' | 'payer' | 'participants' | 'category'> & {
+  participants: number[];
+};

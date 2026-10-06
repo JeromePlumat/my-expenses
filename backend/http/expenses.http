@@ -21,7 +21,8 @@ Content-Type: application/json
   "date": "2025-10-15",
   "description": "Team lunch",
   "payer": "John",
-  "amount": 45.50
+  "amount": 45.50,
+  "categoryId": 1
 }
 
 ### Reset expenses

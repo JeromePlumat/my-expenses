@@ -40,8 +40,9 @@ export class ExpensesService {
       const created = await db.orm.public.Expense.create({
         description: newExpense.description,
         amount: newExpense.amount,
-        date: newExpense.date,
+        date: new Date(newExpense.date).toISOString(),
         payerId: newExpense.payerId,
+        ...(newExpense.categoryId ? { categoryId: newExpense.categoryId } : undefined),
         participants: (mutator) =>
           mutator.create(newExpense.participants.map((userId) => ({ userId }))),
       });
@@ -52,6 +53,7 @@ export class ExpensesService {
         .where({ id: created.id })
         .include('participants', (p) => p.include('user'))
         .include('payer')
+        .include('category')
         .first();
       return {
         id: expense!.id,
@@ -61,6 +63,8 @@ export class ExpensesService {
         payerId: expense!.payerId,
         payer: expense!.payer,
         participants: expense!.participants.map((p) => p.user),
+        categoryId: expense!.categoryId ?? undefined,
+        category: expense!.category ?? undefined,
       };
     } catch (error) {
       console.error("Error adding expense:", error);

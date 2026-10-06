@@ -42,6 +42,7 @@ expensesRouter.get("/", async (req, res) => {
 });
 
 expensesRouter.post("/", async (req, res) => {
+  console.log("POST /api/expenses");
   try {
     const expense: Expense = req.body;
     if (!isValidNewExpense(expense)) {
