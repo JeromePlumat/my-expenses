@@ -46,6 +46,7 @@ export class ExpensesService {
         ...(newExpense.categoryId ? { categoryId: newExpense.categoryId } : undefined),
         participants: (mutator) =>
           mutator.create(newExpense.participants.map((userId) => ({ userId }))),
+        categoryId: newExpense.categoryId ?? undefined,
       });
       if (!created) {
         throw new Error("Failed to create expense");
