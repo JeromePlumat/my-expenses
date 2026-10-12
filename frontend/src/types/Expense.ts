@@ -24,6 +24,10 @@ export const ExpenseFormSchema = z.object({
   categoryId: z.number().int().optional(),
 });
 
+// IDEA: we could infer Expense from Schema
+// export type Expense = z.infer<typeof expenseSchema>;
+
+
 export type ExpenseFormValues = z.infer<typeof ExpenseFormSchema>;
 
 // NewExpense is used when submitting a form: participants are IDs, payer/category are resolved server-side
