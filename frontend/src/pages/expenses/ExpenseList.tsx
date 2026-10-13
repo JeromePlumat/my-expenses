@@ -4,9 +4,11 @@ import ExpenseSearch from "../../components/ExpenseSearch";
 import ExpenseItem from "../../components/ExpenseItem";
 import { useState } from "react";
 import type { Expense } from "../../types/Expense";
+import { useLoaderData } from "react-router";
 
 const ExpenseList = () => {
-  const { expenses, searchExpenses } = useExpenses();
+  const expenses = useLoaderData() as Expense[];
+  const { searchExpenses } = useExpenses();
   const [sortingAlgo, setSortingAlgo] = useState<(a: Expense, b: Expense) => number>(() => () => 1);
 
   const handleAlgoChange = (algo: (a: Expense, b: Expense) => number) => {

@@ -9,6 +9,7 @@ import Welcome from './pages/Welcome.tsx'
 import ExpenseList from './pages/expenses/ExpenseList.tsx'
 import ExpenseNew from './pages/expenses/ExpenseNew.tsx'
 import ExpenseShow from './pages/expenses/ExpenseShow.tsx'
+import { expenseListLoader } from './pages/expenses/ExpenseList.loader.ts'
 
 const theme = createTheme();
 
@@ -17,7 +18,7 @@ const router = createBrowserRouter([
     Component: Layout,
     children: [
       {index: true, Component: Welcome},
-      {path: "/expenses", Component: ExpenseList},
+      {path: "/expenses", Component: ExpenseList, loader: expenseListLoader},
       {path: "/expenses/new", Component: ExpenseNew},
       {path: "/expenses/:id", Component: ExpenseShow},
     ],
