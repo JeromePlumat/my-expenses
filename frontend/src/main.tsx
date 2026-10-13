@@ -10,6 +10,7 @@ import ExpenseList from './pages/expenses/ExpenseList.tsx'
 import ExpenseNew from './pages/expenses/ExpenseNew.tsx'
 import ExpenseShow from './pages/expenses/ExpenseShow.tsx'
 import { expenseListLoader } from './pages/expenses/ExpenseList.loader.ts'
+import { expenseShowLoader } from './pages/expenses/ExpenseShow.loader.ts'
 
 const theme = createTheme();
 
@@ -20,7 +21,7 @@ const router = createBrowserRouter([
       {index: true, Component: Welcome},
       {path: "/expenses", Component: ExpenseList, loader: expenseListLoader},
       {path: "/expenses/new", Component: ExpenseNew},
-      {path: "/expenses/:id", Component: ExpenseShow},
+      {path: "/expenses/:id", Component: ExpenseShow, loader: expenseShowLoader},
     ],
   },
 ]);
