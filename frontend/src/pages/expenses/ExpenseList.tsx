@@ -1,4 +1,3 @@
-import useExpenses from "../../hooks/useExpenses";
 import ExpenseSorter from "../../components/ExpenseSorter";
 import ExpenseSearch from "../../components/ExpenseSearch";
 import ExpenseItem from "../../components/ExpenseItem";
@@ -8,7 +7,6 @@ import { useLoaderData } from "react-router";
 
 const ExpenseList = () => {
   const expenses = useLoaderData() as Expense[];
-  const { searchExpenses } = useExpenses();
   const [sortingAlgo, setSortingAlgo] = useState<(a: Expense, b: Expense) => number>(() => () => 1);
 
   const handleAlgoChange = (algo: (a: Expense, b: Expense) => number) => {
@@ -19,7 +17,7 @@ const ExpenseList = () => {
     <div>
       <h2>Your expenses</h2>
       {expenses.length > 0 && <ExpenseSorter setSortingAlgo={handleAlgoChange} />}
-      {expenses.length > 0 && <ExpenseSearch searchExpenses={searchExpenses} />}
+      {expenses.length > 0 && <ExpenseSearch />}
       <ul>
       {[...expenses ?? []].sort(sortingAlgo).map((expense) => (
         <li key={expense.id}>
