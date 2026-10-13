@@ -10,12 +10,15 @@ import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
+import { useNavigate } from "react-router";
 
 interface ExpenseAddProps {
   expenseAdd: (expense: NewExpense) => Promise<void>;
 }
 
 function ExpenseAdd({ expenseAdd }: ExpenseAddProps) {
+  const navigate = useNavigate();
+  
   const { register, handleSubmit, reset, control, formState: { errors } } = useForm<ExpenseFormValues>({
     resolver: zodResolver(ExpenseFormSchema),
     defaultValues: {
@@ -39,6 +42,7 @@ function ExpenseAdd({ expenseAdd }: ExpenseAddProps) {
     };
     await expenseAdd(newExpense);
     reset(); // clear the form
+    navigate("/expenses");
   };
 
   return (
