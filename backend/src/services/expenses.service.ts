@@ -93,4 +93,32 @@ export class ExpensesService {
       throw error;
     }
   }
+
+  public static async getById(id: number): Promise<Expense | null> {
+    try {
+      const expense = await db.orm.public.Expense
+        .where({ id })
+        .include('participants', (p) => p.include('user'))
+        .include('payer')
+        .include('category')
+        .first();
+      if (!expense) {
+        return null;
+      }
+      return {
+        id: expense.id,
+        date: expense.date,
+        amount: expense.amount,
+        description: expense.description,
+        payerId: expense.payerId,
+        payer: expense.payer,
+        participants: expense.participants.map((p) => p.user),
+        categoryId: expense.categoryId ?? undefined,
+        category: expense.category ?? undefined,
+      };
+    } catch (error) {
+      console.error("Error getting expense by id:", error);
+      throw error;
+    }
+  }
 }

@@ -25,5 +25,5 @@ Content-Type: application/json
   "categoryId": 1
 }
 
-### Reset expenses
-POST {{expenses}}/reset
+### Get by id
+GET {{expenses}}/28
