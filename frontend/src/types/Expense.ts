@@ -15,6 +15,9 @@ export interface Expense {
   category?: Category;
 }
 
+
+export type ExpenseListItem = Omit<Expense, 'participants'>;
+
 export const ExpenseFormSchema = z.object({
   description: z.string().min(1, "Description is required"),
   payerId: z.number().int().positive("Payer ID must be a positive integer"),

@@ -1,5 +1,5 @@
-import { User } from "./user";
-import { Category } from "./category";
+import { type User } from "./user.ts";
+import { type Category } from "./category.ts";
 
 
 export interface Expense {
@@ -11,6 +11,15 @@ export interface Expense {
   amount: number;
   participants: User[];
   categoryId?: number;
+  category?: Category;
+}
+
+export interface ExpenseDTO {
+  id: number;
+  date: string;
+  description: string;
+  payer: {id: number, name: string};
+  amount: number;
   category?: Category;
 }
 

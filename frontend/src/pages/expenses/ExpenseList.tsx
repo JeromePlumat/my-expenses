@@ -2,15 +2,15 @@ import ExpenseSorter from "../../components/ExpenseSorter";
 import ExpenseSearch from "../../components/ExpenseSearch";
 import ExpenseItem from "../../components/ExpenseItem";
 import { useState } from "react";
-import type { Expense } from "../../types/Expense";
+import type { ExpenseListItem } from "../../types/Expense";
 import { useLoaderData } from "react-router";
 import { Typography } from "@mui/material";
 
 const ExpenseList = () => {
-  const expenses = useLoaderData() as Expense[];
-  const [sortingAlgo, setSortingAlgo] = useState<(a: Expense, b: Expense) => number>(() => () => 1);
+  const expenses = useLoaderData() as ExpenseListItem[];
+  const [sortingAlgo, setSortingAlgo] = useState<(a: ExpenseListItem, b: ExpenseListItem) => number>(() => () => 1);
 
-  const handleAlgoChange = (algo: (a: Expense, b: Expense) => number) => {
+  const handleAlgoChange = (algo: (a: ExpenseListItem, b: ExpenseListItem) => number) => {
     setSortingAlgo(() => algo); // We're wrapping algo in a function because useState setter accept either a value or a function returning a value.
   };
 
@@ -21,7 +21,7 @@ const ExpenseList = () => {
       {expenses.length > 0 && <ExpenseSearch />}
       
       {[...expenses ?? []].sort(sortingAlgo).map((expense) => (
-          <ExpenseItem expense={expense} />
+          <ExpenseItem key={expense.id} expense={expense} />
       ))}
     
     </div>

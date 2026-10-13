@@ -5,6 +5,7 @@ import { ExpensesService } from "../services/expenses.service.ts";
 import { isValidNewExpense } from "../guards/expenses.guard.ts";
 import { UsersService } from "../services/users.service.ts";
 import { CategoriesService } from "../services/categories.service.ts";
+import { ExpensesMapper } from "../mappers/expenses.mapper.ts";
 
 const expensesRouter = express.Router();
 
@@ -35,7 +36,8 @@ expensesRouter.get("/", async (req, res) => {
       }
     }
     const expenses = await ExpensesService.getExpenses(filter);
-    res.json(expenses);
+    const expensesDTO = expenses.map((expense) => ExpensesMapper.toDTO(expense));
+    res.json(expensesDTO);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
@@ -49,7 +51,7 @@ expensesRouter.post("/", async (req, res) => {
       return res.status(400).json({ error: "Invalid expense" });
     }
     const expenses = await ExpensesService.addExpense(expense);
-    res.status(201).json(expenses);
+    res.status(201).json(ExpensesMapper.toDTO(expenses));
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
@@ -65,7 +67,7 @@ expensesRouter.get("/:id", async (req, res) => {
     if (!expense) {
       return res.status(404).json({ error: "Expense not found" });
     }
-    res.json(expense);
+    res.json(ExpensesMapper.toDTO(expense));
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
