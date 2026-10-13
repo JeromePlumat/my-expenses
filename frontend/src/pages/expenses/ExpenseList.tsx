@@ -4,6 +4,7 @@ import ExpenseItem from "../../components/ExpenseItem";
 import { useState } from "react";
 import type { Expense } from "../../types/Expense";
 import { useLoaderData } from "react-router";
+import { Typography } from "@mui/material";
 
 const ExpenseList = () => {
   const expenses = useLoaderData() as Expense[];
@@ -15,17 +16,15 @@ const ExpenseList = () => {
 
   return (
     <div>
-      <h2>Your expenses</h2>
+      <Typography variant="h4" component="h2">Your expenses</Typography>
       {expenses.length > 0 && <ExpenseSorter setSortingAlgo={handleAlgoChange} />}
       {expenses.length > 0 && <ExpenseSearch />}
-      <ul>
+      
       {[...expenses ?? []].sort(sortingAlgo).map((expense) => (
-        <li key={expense.id}>
           <ExpenseItem expense={expense} />
-        </li>
       ))}
-    </ul>
-        </div>
+    
+    </div>
   );
 };
 
