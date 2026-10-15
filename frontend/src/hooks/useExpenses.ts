@@ -18,6 +18,8 @@
  */
 import { useState, useEffect, useCallback } from "react";
 import type { Expense, NewExpense } from "../types/Expense";
+import { graphqlRequest } from "../lib/rest";
+import { CREATE_EXPENSE } from "../pages/expenses/ExpenseNew";
 
 export interface ExpenseFilter {
   amount?: number;
@@ -176,10 +178,7 @@ function useExpenses() {
    * expense returned by the server to the existing local list.
    */
   const addExpense = useCallback(async (newExpense: NewExpense): Promise<void> => {
-    const created = await postExpense(newExpense);
-    if (created) {
-      setExpenses((prev) => [...prev, created]); // append new expense without clearing the list
-    }
+    await graphqlRequest(CREATE_EXPENSE, { input: newExpense });
   }, []);
 
   /**

@@ -3,6 +3,14 @@ import useExpenses from "../../hooks/useExpenses";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 
+export const CREATE_EXPENSE = /* GraphQL */ `
+  mutation CreateExpense($input: CreateExpenseInput!) {
+    createExpense(input: $input) {
+      id
+    }
+  }
+`;
+
 const ExpenseNew = () => {
   const { addExpense } = useExpenses();
   return (

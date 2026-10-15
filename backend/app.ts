@@ -21,6 +21,22 @@ app.use('/api/expenses', expensesRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/categories', categoriesRouter);
 
+import { createYoga } from 'graphql-yoga';
+import { schema } from './src/graphql/schema.ts';
+
+const yoga = createYoga({
+  schema,
+  graphqlEndpoint: '/graphql',
+  // Yoga ships its own CORS handling, separate from the `cors()` middleware
+  // above — and its default reflects back whatever Origin it is sent. Turn
+  // it off so /graphql respects the same allowlist as the REST routes.
+  cors: false,
+  // By default Yoga replaces every resolver error with "Unexpected error." so a
+  // production server never leaks internals. In development you want the details of what went bad.
+  maskedErrors: process.env.NODE_ENV === 'production',
+});
+app.use(yoga.graphqlEndpoint, yoga);
+
 app.listen(port, () => {
   console.log(`Server listening on http://localhost:${port}`);
 });
