@@ -1,4 +1,4 @@
-import { db } from "../prisma/db.ts";
+import { db } from "../src/prisma/db.ts";
 import { Temporal } from 'temporal-polyfill';
 
 const users = [
@@ -103,7 +103,7 @@ async function seed() {
     expensesSeed.map(async ({ participants, ...fields }) => {
       await db.orm.public.Expense.create({
         ...fields,
-        participants: (mutator) =>
+        participants: (mutator: any) =>
           mutator.create(participants.map((userId: number) => ({ userId }))),
       });
     })

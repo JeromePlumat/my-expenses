@@ -4,6 +4,7 @@ model User {
   name                 String
   email                String        @unique
   bankAccount          String? // optional
+  password             String
   paidExpenses         Expense[]     @relation("PayerExpenses")
   transfersOut         Transfer[]    @relation("UserTransfersSource")
   transfersIn          Transfer[]    @relation("UserTransfersTarget")
