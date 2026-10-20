@@ -20,9 +20,11 @@ app.get('/ping', (req, res) => {
 app.use('/api/expenses', expensesRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/categories', categoriesRouter);
+app.use('/api/auth', authRouter);
 
 import { createYoga } from 'graphql-yoga';
 import { schema } from './src/graphql/schema.ts';
+import authRouter from './src/routes/auth.router.ts';
 
 const yoga = createYoga({
   schema,

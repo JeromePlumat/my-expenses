@@ -2,7 +2,6 @@ import fs from "fs";
 import { Temporal } from "temporal-polyfill";
 import type { Expense, NewExpense, ExpenseFilter } from "../types/expense.ts";
 import { db } from "../prisma/db.ts";
-import { Temporal } from "temporal-polyfill";
 
 export class ExpensesService {
 

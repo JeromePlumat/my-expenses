@@ -1,0 +1,21 @@
+@server = http://localhost:3000
+@auth = {{server}}/api/auth
+
+### Crate a new user
+POST {{auth}}/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Sindaï Doe",
+  "email": "sinda.doe@example.com",
+  "password": "sinda"
+}
+
+### Login
+POST {{auth}}/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "sinda.doe@example.com",
+  "password": "sinda"
+}

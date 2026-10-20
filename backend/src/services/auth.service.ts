@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { db } from '../prisma/db.ts';
-import { AuthResponse, LoginInput, RegisterInput } from '../types/auth.ts';
+import type { AuthResponse, LoginInput, RegisterInput } from '../types/auth.ts';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-do-not-use';
 const SALT_ROUNDS = 10;
