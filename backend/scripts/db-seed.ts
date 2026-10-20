@@ -4,92 +4,6 @@ import { Temporal } from 'temporal-polyfill';
 
 // Default password : firstname of the user
 
-const users = [
-  {
-    id: 1,
-    name: "John Doe",
-    email: "john.doe@example.com",
-    bankAccount: "BE12 3456 7890 1234",
-    password: await bcrypt.hash('john', 10),
-  },
-  {
-    id: 2,
-    name: "Jane Doe",
-    email: "jane.doe@example.com",
-    bankAccount: "BE13 3456 7890 1234",
-    password: await bcrypt.hash('jane', 10),
-  },
-  {
-    id: 3,
-    name: "Abdallah Doe",
-    email: "abdallah.doe@example.com",
-    bankAccount: "BE14 3456 7890 1234",
-    password: await bcrypt.hash('abdallah', 10),
-  },
-  {
-    id: 4,
-    name: "Soufiane Doe",
-    email: "soufiane.doe@example.com",
-    bankAccount: "BE15 3456 7890 1234",
-    password: await bcrypt.hash('soufiane', 10),
-  },
-];
-
-const expensesSeed = [
-  {
-    description: "Coffee",
-    amount: 3.50,
-    payerId: 1, // John pays
-    date: Temporal.Instant.from("2026-10-15T00:00:00Z"),
-    participants: [1, 2],
-  },
-  {
-    description: 'Groceries',
-    amount: 45.0,
-    date: Temporal.Instant.from("2026-10-16T00:00:00Z"),
-    payerId: 2, // Jane pays
-    participants: [1, 2, 3],
-  },
-  {
-    description: 'Internet Bill',
-    amount: 60.0,
-    date: Temporal.Instant.from("2026-10-17T00:00:00Z"),
-    payerId: 3, // Abdallah pays
-    participants: [2, 3],
-  },
-];
-
-const transfers = [
-  {
-    id: 1,
-    amount: 1.75, // Jane owes John half of the coffee cost
-    sourceId: 2, // From Jane
-    targetId: 1, // To John
-    date: Temporal.Instant.from("2026-10-15T10:05:00Z"),
-  },
-  {
-    id: 2,
-    amount: 15.0, // John owes Jane her share of groceries
-    sourceId: 1, // From John
-    targetId: 2, // To Jane
-    date: Temporal.Instant.from("2026-10-17T09:00:00Z"),
-  },
-  {
-    id: 3,
-    amount: 15.0, // Abdallah owes Jane his share of groceries
-    sourceId: 3, // From Abdallah
-    targetId: 2, // To Jane
-    date: Temporal.Instant.from("2026-10-17T09:03:00Z"),
-  },
-  {
-    id: 4,
-    amount: 30.0, // Jane owes Abdallah half of internet bill
-    sourceId: 2, // From Jane
-    targetId: 3, // To Abdallah
-    date: Temporal.Instant.from("2026-10-20T22:30:00Z"),
-  },
-];
-
 async function seed() {
   console.log("Deleting all data...");
   await db.orm.public.Transfer.where({}).deleteAll();
@@ -98,33 +12,91 @@ async function seed() {
   console.log("...Done!");
 
   console.log("populating users...");
-  await Promise.all(
-    users.map(async (user) => {
-      await db.orm.public.User.create(user);
-    })
-  );
+  // Create users sequentially so we can reference their generated IDs below.
+  // Using explicit IDs would desync the PostgreSQL sequence and break later inserts.
+  const john = await db.orm.public.User.create({
+    name: "John Doe",
+    email: "john.doe@example.com",
+    bankAccount: "BE12 3456 7890 1234",
+    password: await bcrypt.hash('john', 10),
+  });
+  const jane = await db.orm.public.User.create({
+    name: "Jane Doe",
+    email: "jane.doe@example.com",
+    bankAccount: "BE13 3456 7890 1234",
+    password: await bcrypt.hash('jane', 10),
+  });
+  const abdallah = await db.orm.public.User.create({
+    name: "Abdallah Doe",
+    email: "abdallah.doe@example.com",
+    bankAccount: "BE14 3456 7890 1234",
+    password: await bcrypt.hash('abdallah', 10),
+  });
+  await db.orm.public.User.create({
+    name: "Soufiane Doe",
+    email: "soufiane.doe@example.com",
+    bankAccount: "BE15 3456 7890 1234",
+    password: await bcrypt.hash('soufiane', 10),
+  });
   console.log("...Done!");
 
   console.log("populating expenses...");
-  await Promise.all(
-    expensesSeed.map(async ({ participants, ...fields }) => {
-      await db.orm.public.Expense.create({
-        ...fields,
-        participants: (mutator: any) =>
-          mutator.create(participants.map((userId: number) => ({ userId }))),
-      });
-    })
-  );
+  await Promise.all([
+    db.orm.public.Expense.create({
+      description: "Coffee",
+      amount: 3.50,
+      payerId: john.id, // John pays
+      date: Temporal.Instant.from("2026-10-15T00:00:00Z"),
+      participants: (mutator: any) =>
+        mutator.create([{ userId: john.id }, { userId: jane.id }]),
+    }),
+    db.orm.public.Expense.create({
+      description: 'Groceries',
+      amount: 45.0,
+      date: Temporal.Instant.from("2026-10-16T00:00:00Z"),
+      payerId: jane.id, // Jane pays
+      participants: (mutator: any) =>
+        mutator.create([{ userId: john.id }, { userId: jane.id }, { userId: abdallah.id }]),
+    }),
+    db.orm.public.Expense.create({
+      description: 'Internet Bill',
+      amount: 60.0,
+      date: Temporal.Instant.from("2026-10-17T00:00:00Z"),
+      payerId: abdallah.id, // Abdallah pays
+      participants: (mutator: any) =>
+        mutator.create([{ userId: jane.id }, { userId: abdallah.id }]),
+    }),
+  ]);
   console.log("...Done!");
 
   console.log("populating transfers...");
-  await Promise.all(
-    transfers.map(async (transfer) => {
-      await db.orm.public.Transfer.create(transfer);
-    })
-  );
+  await Promise.all([
+    db.orm.public.Transfer.create({
+      amount: 1.75, // Jane owes John half of the coffee cost
+      sourceId: jane.id, // From Jane
+      targetId: john.id, // To John
+      date: Temporal.Instant.from("2026-10-15T10:05:00Z"),
+    }),
+    db.orm.public.Transfer.create({
+      amount: 15.0, // John owes Jane her share of groceries
+      sourceId: john.id, // From John
+      targetId: jane.id, // To Jane
+      date: Temporal.Instant.from("2026-10-17T09:00:00Z"),
+    }),
+    db.orm.public.Transfer.create({
+      amount: 15.0, // Abdallah owes Jane his share of groceries
+      sourceId: abdallah.id, // From Abdallah
+      targetId: jane.id, // To Jane
+      date: Temporal.Instant.from("2026-10-17T09:03:00Z"),
+    }),
+    db.orm.public.Transfer.create({
+      amount: 30.0, // Jane owes Abdallah half of internet bill
+      sourceId: jane.id, // From Jane
+      targetId: abdallah.id, // To Abdallah
+      date: Temporal.Instant.from("2026-10-20T22:30:00Z"),
+    }),
+  ]);
   console.log("...Done!");
-
 }
 
 seed()
