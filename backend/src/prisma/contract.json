@@ -8,6 +8,10 @@
       "model": "ExpenseUser",
       "namespace": "public"
     },
+    "category": {
+      "model": "Category",
+      "namespace": "public"
+    },
     "expense": {
       "model": "Expense",
       "namespace": "public"
@@ -25,12 +29,60 @@
     "namespaces": {
       "public": {
         "models": {
+          "Category": {
+            "fields": {
+              "colour": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "name": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {},
+            "storage": {
+              "fields": {
+                "colour": {
+                  "column": "colour"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "name": {
+                  "column": "name"
+                }
+              },
+              "namespaceId": "public",
+              "table": "category"
+            }
+          },
           "Expense": {
             "fields": {
               "amount": {
                 "nullable": false,
                 "type": {
                   "codecId": "pg/float8@1",
+                  "kind": "scalar"
+                }
+              },
+              "categoryId": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/int4@1",
                   "kind": "scalar"
                 }
               },
@@ -64,6 +116,22 @@
               }
             },
             "relations": {
+              "category": {
+                "cardinality": "N:1",
+                "nullable": true,
+                "on": {
+                  "localFields": [
+                    "categoryId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Category",
+                  "namespace": "public"
+                }
+              },
               "participants": {
                 "cardinality": "1:N",
                 "on": {
@@ -100,6 +168,9 @@
               "fields": {
                 "amount": {
                   "column": "amount"
+                },
+                "categoryId": {
+                  "column": "categoryId"
                 },
                 "date": {
                   "column": "date"
@@ -472,12 +543,54 @@
               },
               "uniques": []
             },
+            "category": {
+              "columns": {
+                "colour": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "name": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "name"
+                  ]
+                }
+              ]
+            },
             "expense": {
               "columns": {
                 "amount": {
                   "codecId": "pg/float8@1",
                   "nativeType": "float8",
                   "nullable": false
+                },
+                "categoryId": {
+                  "codecId": "pg/int4@1",
+                  "nativeType": "int4",
+                  "nullable": true
                 },
                 "date": {
                   "codecId": "pg/timestamptz-temporal@1",
@@ -524,9 +637,33 @@
                     "namespaceId": "public",
                     "tableName": "user"
                   }
+                },
+                {
+                  "source": {
+                    "columns": [
+                      "categoryId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "expense"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "category"
+                  }
                 }
               ],
               "indexes": [
+                {
+                  "columns": [
+                    "categoryId"
+                  ],
+                  "name": "expense_categoryId_idx_15c304f2",
+                  "prefix": "expense_categoryId_idx",
+                  "unique": false
+                },
                 {
                   "columns": [
                     "payerId"
@@ -686,7 +823,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "9c83073fb5d8e345ab9ab1cdf00e72ef1ce4f6df0491d71e50bfbb705521c5f2"
+    "storageHash": "e04c207a49a2c453ab3b941d75e6f4502a58b5441dd401d99832a3d33f95f686"
   },
   "capabilities": {
     "postgres": {
@@ -701,6 +838,8 @@
       "checkConstraint": true,
       "defaultInInsert": true,
       "enums": true,
+      "insertOnConflictSkip": true,
+      "insertOnConflictWithoutTarget": true,
       "lateral": true,
       "returning": true,
       "scalarList": true

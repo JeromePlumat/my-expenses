@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import type { Expense } from '../types/Expense';
+import type { ExpenseListItem } from '../types/Expense';
 
 type SortOption = 'date-newest' | 'date-oldest';
-type SortingAlgo = (a: Expense, b: Expense) => number;
+type SortingAlgo = (a: ExpenseListItem, b: ExpenseListItem) => number;
 
 interface ExpenseSorterProps {
   setSortingAlgo: (algo: SortingAlgo) => void;

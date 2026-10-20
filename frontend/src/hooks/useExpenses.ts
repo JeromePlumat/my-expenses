@@ -18,6 +18,14 @@
  */
 import { useState, useEffect, useCallback } from "react";
 import type { Expense, NewExpense } from "../types/Expense";
+import { graphqlRequest } from "../lib/rest";
+import { CREATE_EXPENSE } from "../pages/expenses/ExpenseNew";
+
+export interface ExpenseFilter {
+  amount?: number;
+  payerId?: string;
+  categoryId?: number;
+}
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -31,8 +39,21 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
  * Fetches the full list of expenses from the backend.
  * Returns an empty array if the request fails so the UI never crashes.
  */
-async function fetchAllExpenses(): Promise<Expense[]> {
-  return fetch(`${API_BASE_URL}/api/expenses`)
+async function fetchAllExpenses(filter?: ExpenseFilter): Promise<Expense[]> {
+  let url = `${API_BASE_URL}/api/expenses`;
+  console.log("filter", filter);
+
+  if (filter) {
+    const params = new URLSearchParams();
+    for (const [key, value] of Object.entries(filter)) {
+      if (value !== undefined && value !== null && value !== "") {
+        params.append(key, value.toString());
+      }
+    }
+    url += `?${params.toString()}`;
+  }
+  
+  return fetch(url)
     .then((res) => res.json())
     .then((data) => (Array.isArray(data) ? (data as Expense[]) : []))
     .catch((error) => {
@@ -157,10 +178,7 @@ function useExpenses() {
    * expense returned by the server to the existing local list.
    */
   const addExpense = useCallback(async (newExpense: NewExpense): Promise<void> => {
-    const created = await postExpense(newExpense);
-    if (created) {
-      setExpenses((prev) => [...prev, created]); // append new expense without clearing the list
-    }
+    await graphqlRequest(CREATE_EXPENSE, { input: newExpense });
   }, []);
 
   /**
@@ -174,11 +192,20 @@ function useExpenses() {
   }, []);
 
   /**
+   * searchExpenses: fetches expenses matching the given filter, then stores
+   * the results in state so the UI re-renders with the filtered list.
+   */
+  const searchExpenses = useCallback(async (filter?: ExpenseFilter): Promise<void> => {
+    const results = await fetchAllExpenses(filter);
+    setExpenses(results);
+  }, []);
+
+  /**
    * Everything a component needs is returned in a plain object.
    * The component destructures what it needs:
    *   const { expenses, addExpense } = useExpenses();
    */
-  return { expenses, loading, addExpense, resetExpenses };
+  return { expenses, loading, addExpense, resetExpenses, searchExpenses };
 }
 
 export default useExpenses;
