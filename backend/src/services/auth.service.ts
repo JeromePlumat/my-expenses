@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { db } from '../prisma/db.ts';
 import type { AuthResponse, LoginInput, RegisterInput } from '../types/auth.ts';
+import { AuthenticationError, ConflictError } from '../errors/app.error.ts';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-do-not-use';
 const SALT_ROUNDS = 10;
@@ -12,7 +13,7 @@ export class AuthService {
     const existingUser = await db.orm.public.User.where({ email: input.email }).first();
 
     if (existingUser) {
-      throw new Error('User with this email already exists');
+      throw new ConflictError('User with this email already exists');
     }
 
     // Hash password
@@ -47,14 +48,14 @@ export class AuthService {
     const user = await db.orm.public.User.where({ email: input.email }).first();
 
     if (!user) {
-      throw new Error('Invalid email or password');
+      throw new AuthenticationError('Invalid email or password');
     }
 
     // Verify password
     const validPassword = await bcrypt.compare(input.password, user.password);
 
     if (!validPassword) {
-      throw new Error('Invalid email or password');
+      throw new AuthenticationError('Invalid email or password');
     }
 
     // Generate JWT

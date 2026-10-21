@@ -8,6 +8,7 @@ import type { GraphQLContext } from './src/types/GraphQLContext.ts';
 import authRouter from './src/routes/auth.router.ts';
 import { schema } from './src/graphql/schema.ts';
 import { AuthService } from './src/services/auth.service.ts';
+import { maskError } from './src/graphql/errorFormatter.ts';
 
 const app = express();
 
@@ -60,7 +61,10 @@ const yoga = createYoga({
   cors: false,
   // By default Yoga replaces every resolver error with "Unexpected error." so a
   // production server never leaks internals. In development you want the details of what went bad.
-  maskedErrors: process.env.NODE_ENV === 'production',
+  maskedErrors: {
+    maskError,
+    isDev: process.env.NODE_ENV !== 'production',
+  },
   context: async ({ request }): Promise<GraphQLContext> => {
     // Extract token from Authorization header
     // Note: yoga uses the Web API `request.headers.get()`, not Node's req.headers
