@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
+import { useAuth } from "../contexts/AuthContext";
 
 const navLinks = [
   { to: "/", label: "Home", end: true },
@@ -13,6 +14,8 @@ const navLinks = [
 ];
 
 function Layout() {
+  const { user } = useAuth();
+
   return (
     <>
       <AppBar position="static">
@@ -20,6 +23,11 @@ function Layout() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             My Expenses App
           </Typography>
+          {user && (
+            <Typography variant="body2" sx={{ mr: 2, opacity: 0.85 }}>
+              {user.email}
+            </Typography>
+          )}
           <Box>
             {navLinks.map(({ to, label, end }) => (
               <Button

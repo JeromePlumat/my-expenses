@@ -63,27 +63,6 @@ async function fetchAllExpenses(filter?: ExpenseFilter): Promise<Expense[]> {
 }
 
 /**
- * Sends a new expense to the backend (HTTP POST).
- * The backend responds with the created expense object, which we return.
- * Returns null if the request fails.
- */
-async function postExpense(newExpense: NewExpense): Promise<Expense | null> {
-  return fetch(`${API_BASE_URL}/api/expenses`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(newExpense),
-  })
-    .then((res) => res.json())
-    .then((data) => data as Expense)
-    .catch((error) => {
-      console.error("Error adding expense:", error);
-      return null;
-    });
-}
-
-/**
  * Asks the backend to delete all expenses (HTTP POST to /reset).
  * The backend responds with an empty list, which we return.
  * Returns an empty array if the request fails.
